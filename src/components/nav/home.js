@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import { WeatherInfo } from "../weatherApi/weatherInfo";
 
 export const home = () => {
   return (
     <Styles>
       <main>
         <section className="home_section_1">
-          <div>날씨정보 구역</div>
-          <div>뉴스정보 구역</div>
+          <WeatherInfo />
+          뉴스정보 구역
         </section>
         <section className="home_section_2">
           <article>
@@ -34,16 +35,11 @@ const Styles = styled.div`
     flex-direction: column;
     align-content: center;
     justify-content: center;
-    & div {
-      width: 100%;
-      height: 150px;
-      border: 3px dotted orange;
-    }
   }
   & .home_section_2 {
     & div {
       width: 100%;
-      height: 150px;
+      height: 100%;
       border: 3px dotted orange;
     }
   }

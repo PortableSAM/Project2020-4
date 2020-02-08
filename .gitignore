@@ -24,3 +24,7 @@ yarn-error.log*
 
 ## weather
 **/weatherApi/lib.js
+
+
+## news
+**/newsApi/lib.js

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { currnetUrl, Key } from "./lib";
+import { fcstUrl, currnetUrl, Key } from "./lib";
 import { WeatherCompo } from "./weatherCompo";
 
 export const WeatherInfo = () => {
@@ -13,6 +13,7 @@ export const WeatherInfo = () => {
     deg: undefined,
     icon: undefined
   });
+  //const [fcst, setFcst] = useState();
 
   useEffect(() => {
     const option = {
@@ -35,12 +36,19 @@ export const WeatherInfo = () => {
   }, []);
 
   const getFcst = async ({ latitude, longitude }) => {
+    const fcstResponse = await fetch(
+      `${fcstUrl}lat=${latitude}&lon=${longitude}&appid=${Key}&units=metric`
+    );
+    if (!fcstResponse.ok) {
+      console.log("Load Fail");
+    }
     const response = await fetch(
       `${currnetUrl}lat=${latitude}&lon=${longitude}&appid=${Key}&units=metric`
     );
     if (!response.ok) {
       console.log("Load Fail");
     }
+    console.log(await fcstResponse.json());
     const { main, sys, name, weather, wind } = await response.json();
     setWthrInfo({
       temp: main.temp,

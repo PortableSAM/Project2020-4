@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { WeatherInfo } from "../weatherApi/weatherInfo";
+import { News } from "../newsApi/newsApp";
 
 export const home = () => {
   return (
@@ -8,7 +9,7 @@ export const home = () => {
       <main>
         <section className="home_section_1">
           <WeatherInfo />
-          뉴스정보 구역
+          <News />
         </section>
         <section className="home_section_2">
           <article>

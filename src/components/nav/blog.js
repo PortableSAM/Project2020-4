@@ -6,18 +6,20 @@ export const blog = () => {
     <Styles>
       <main>
         <section>
-          <table>
+          <table className="table table">
             <thead>
               <tr>
-                <th>작성일자</th>
+                <th>Category</th>
                 <th>제 목</th>
+                <th>작성일자</th>
                 <th>작 성 자</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">date</th>
+                <th scope="row">###</th>
                 <td>title</td>
+                <td>date</td>
                 <td>Author</td>
               </tr>
             </tbody>
@@ -25,7 +27,8 @@ export const blog = () => {
         </section>
         <div className="btn_section">
           <input name="text_input" />
-          <button>button</button>
+          <button className="btn btn-outline-info">button</button>{" "}
+          <button className="postAdd btn btn-outline-secondary">ADD</button>
         </div>
       </main>
     </Styles>
@@ -38,15 +41,16 @@ const Styles = styled.div`
   display: flex;
   justify-content: center;
   border: 1px solid red;
-  & table {
+  table {
     width: 100%;
     border: 1px solid gray;
-    & th {
-      border-bottom: 1px dotted gray;
+    & th,
+    td {
+      padding: 5px;
       text-align: center;
     }
   }
-  & main {
+  main {
     margin: 0;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -58,18 +62,19 @@ const Styles = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    & .btn_section {
+    .btn_section {
       margin: 0 5px;
       padding: 5px;
       width: 85%;
       display: flex;
       justify-content: flex-end;
-      & input {
+      input {
         margin-right: 10px;
       }
-      & button {
+      button {
+        margin-right: 10px;
         padding: 3px 5px;
-        width: 150px;
+        width: 90px;
         height: 30px;
         letter-spacing: 2px;
         text-transform: uppercase;
@@ -79,7 +84,7 @@ const Styles = styled.div`
         }
       }
     }
-    & section {
+    section {
       margin: 0 5px;
       padding: 5px;
       width: 85%;

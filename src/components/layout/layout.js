@@ -35,23 +35,6 @@ export const Layout = () => {
           <Route path="/contents" component={contents} />
           <Route path="/blog" component={blog} />
         </main>
-        <footer>
-          <section className="footer_section_1">
-            <h5>It's footer Area</h5>
-            <Link to="/##">
-              <h5>Git Hub</h5>
-            </Link>
-            <Link to="/##">
-              <h5>Linked in</h5>
-            </Link>
-            <Link to="/##">
-              <h5>FaecBook</h5>
-            </Link>
-          </section>
-          <section className="footer_section_2">
-            <p>build 2020. 02. with React.JS</p>
-          </section>
-        </footer>
       </Router>
     </Styles>
   );
@@ -112,7 +95,6 @@ const Styles = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    position: absolute;
     left: 0;
     bottom: 0;
     background: #2c3e50;

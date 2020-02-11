@@ -67,6 +67,9 @@ export const BlogView = () => {
                     {errors.postAuthor && "프로젝트 시작일 입력 요구"}
                   </label>
                   <label className="postContent">
+                    File <input type="file" name="postFile" ref={register} />
+                  </label>
+                  <label className="postContent">
                     Post 내용{" "}
                     <textarea type="text" name="postContent" ref={register} />
                   </label>

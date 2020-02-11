@@ -31,6 +31,7 @@ export const ContentsView = () => {
       .then(res => {
         console.log("Add Success", res);
         alert("Add Success");
+        onToggle();
       })
       .catch(error => {
         console.log("err", error);
@@ -219,23 +220,31 @@ const Styles = styled.div`
     }
     & section {
       margin: 0 5px;
-      padding: 5px;
+      padding: 15px;
       width: 85%;
-      height: 100%;
+      height: 650px;
       display: flex;
       flex-direction: row;
       flex-flow: wrap;
       align-items: center;
       justify-content: space-between;
       border: 2px solid blueviolet;
+      overflow-y: scroll;
       & div {
-        margin: 5px;
+        margin: 10px;
         padding: 10px;
         width: 45%;
+        background: #a4b0be;
+        border-radius: 5px;
+        box-shadow: 3px 4px 4px rgba(241, 242, 246, 1),
+          4px 5px 5px rgba(87, 96, 111, 1);
       }
       & p {
         margin-top: 5px;
         margin-bottom: 5px;
+        & a {
+          color: #2f3542;
+        }
       }
       & .contentsTA {
         display: flex;

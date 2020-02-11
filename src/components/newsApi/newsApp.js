@@ -59,23 +59,19 @@ export const News = () => {
         </label>
   </form>*/}
       <NewsSection>
-        {data ? (
-          data.map((item, index) => (
-            <span key={index}>
-              <h5>
-                <a
-                  href={`${item.link}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {item.title}
-                </a>
-              </h5>
-            </span>
-          ))
-        ) : (
-          <p>No News Data</p>
-        )}
+        {data.map((item, index) => (
+          <span key={index}>
+            <h5>
+              <a
+                href={`${item.link}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {item.title}
+              </a>
+            </h5>
+          </span>
+        ))}
       </NewsSection>
     </NewsStyle>
   );

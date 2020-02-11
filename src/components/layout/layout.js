@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { home } from "../nav/home";
+import { Home } from "../nav/home";
 import { about } from "../nav/about";
 import { contents } from "../nav/contents";
 import { blog } from "../nav/blog";
@@ -30,7 +30,7 @@ export const Layout = () => {
           </ul>
         </header>
         <main>
-          <Route exact path="/" component={home} />
+          <Route exact path="/" component={Home} />
           <Route path="/about" component={about} />
           <Route path="/contents" component={contents} />
           <Route path="/blog" component={blog} />

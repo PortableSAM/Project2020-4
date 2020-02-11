@@ -1,37 +1,85 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import firebase from "../../firebase/firebase";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useForm } from "react-hook-form";
 
+const db = firebase.database();
+
 export const ContentsView = () => {
   const [modal, setModal] = useState(false);
+  const [contents, setContents] = useState({ data: [] });
   const onToggle = () => setModal(!modal === true);
+  const data = contents.data;
 
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmitData = (data, e) => {
     e.preventDefault();
     console.log(data);
+    db.ref("contents/" + data.title)
+      .set({
+        title: data.title,
+        startDay: data.sDay,
+        endDay: data.eDay,
+        Language: data.pLanguage,
+        library: data.pLib,
+        link: data.pLink,
+        gihhub: data.pGithubLink,
+        etc: data.pEtc
+      })
+      .then(res => {
+        console.log("Add Success", res);
+        alert("Add Success");
+      })
+      .catch(error => {
+        console.log("err", error);
+      });
   };
+
+  useEffect(() => {
+    const fetchData = () => {
+      const data = [];
+      const dbRef = db.ref("contents/");
+      dbRef.orderByChild("startDay").on("child_added", snapshot => {
+        data.push({
+          id: snapshot.key,
+          ...snapshot.val()
+        });
+        setContents({ data: data });
+      });
+    };
+    return fetchData();
+  }, []);
+
+  console.log(data);
 
   return (
     <Styles>
       <main>
         <section>
-          <div>
-            <h5>새로운 프로젝트01</h5>
-            <h5>시작: YYYY. MM. DD</h5>
-            <h5>언어: JS</h5>
-            <h5>라이브러리: React</h5>
-            <h5>etc: none</h5>
-          </div>
-          <div>
-            <h5>새로운 프로젝트02</h5>
-            <h5>시작: YYYY. MM. DD</h5>
-            <h5>언어: TS</h5>
-            <h5>라이브러리: React</h5>
-            <h5>etc: none</h5>
-          </div>
+          {data.map(c => (
+            <div key={c.id}>
+              <p>{c.title}</p>
+              <p>
+                기간: {c.startDay} ~ {c.endDay}
+              </p>
+              <p>언어: {c.Language}</p>
+              <p>라이브러리: {c.library}</p>
+              <p>
+                URL:{" "}
+                <a href={c.link} target="_blank" rel="noopener noreferrer">
+                  {c.link}
+                </a>
+              </p>
+              <p>
+                Github:{" "}
+                <a href={c.gihhub} target="_blank" rel="noopener noreferrer">
+                  {c.gihhub}
+                </a>
+              </p>
+            </div>
+          ))}
         </section>
         <div className="contentsAddbtn">
           <Button color="primary" onClick={onToggle}>
@@ -80,6 +128,18 @@ export const ContentsView = () => {
                     ref={register({ required: true })}
                   />
                   {errors.pLib && "사용 라이브러리 입력 요구"}
+                </label>
+                <label>
+                  Project URL <input type="link" name="pLink" ref={register} />
+                </label>
+                <label>
+                  Project Github URL{" "}
+                  <input
+                    type="link"
+                    name="pGithubLink"
+                    ref={register({ required: true })}
+                  />
+                  {errors.pLib && "프로젝트 Github URL 입력 요구"}
                 </label>
                 <label className="petc">
                   Project 기타사항{" "}
@@ -173,9 +233,17 @@ const Styles = styled.div`
         padding: 10px;
         width: 45%;
       }
-      & h5 {
+      & p {
         margin-top: 5px;
         margin-bottom: 5px;
+      }
+      & .contentsTA {
+        display: flex;
+        flex-direction: column;
+        & textarea {
+          width: 100%;
+          height: 150px;
+        }
       }
     }
   }

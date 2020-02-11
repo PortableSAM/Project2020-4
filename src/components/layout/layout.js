@@ -43,6 +43,9 @@ export const Layout = () => {
 const Styles = styled.div`
   margin: 0;
   padding: 0;
+  & main {
+    margin-top: 20px;
+  }
   & a {
     text-decoration: none;
   }
@@ -69,6 +72,7 @@ const Styles = styled.div`
         3px 4px 4px rgba(255, 255, 255, 1);
     }
     & ul {
+      margin-top: 5px;
       margin-right: 15px;
       padding: 0;
       display: flex;

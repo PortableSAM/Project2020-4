@@ -6,13 +6,16 @@ import firebase from "../../firebase/firebase";
 
 const cDb = firebase.database();
 const cDbRef = cDb.ref("contents/");
+const bDb = firebase.firestore();
+const bDbRef = bDb.collection("blog").orderBy("createAt", "desc");
 
 export const Home = () => {
+  const [btitle, setBtitle] = useState([]);
   const [ctitle, setCtitle] = useState({ data: [] });
   const cData = ctitle.data;
 
   useEffect(() => {
-    const cTitle = () => {
+    const Title = () => {
       const data = [];
       cDbRef
         .orderByChild("startDay")
@@ -24,8 +27,15 @@ export const Home = () => {
           });
           setCtitle({ data: data });
         });
+      bDbRef.onSnapshot(snap => {
+        const bT = snap.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setBtitle(bT);
+      });
     };
-    return cTitle();
+    return Title();
   }, []);
 
   console.log(cData);
@@ -39,7 +49,16 @@ export const Home = () => {
         </section>
         <section className="home_section_2">
           <article>
-            <div>Blog Text 구역</div>
+            <h6>새로운 게시글</h6>
+            {btitle.map(b => (
+              <BDiv key={b.id}>
+                <p className="btitle">{b.title}</p>
+                <p>{b.author}</p>
+                <p>
+                  {new Date(b.createAt.seconds * 1000).toLocaleDateString("ko")}
+                </p>
+              </BDiv>
+            ))}
           </article>
           <article>
             <h6>새로운 프로젝트</h6>
@@ -57,6 +76,22 @@ export const Home = () => {
     </Styles>
   );
 };
+const BDiv = styled.div`
+  margin: 5px 0;
+  padding: 5px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 5px;
+  :hover {
+    background: #303952;
+    color: #ffffff;
+  }
+  & .btitle {
+    width: 60%;
+  }
+`;
+
 const CDiv = styled.div`
   margin: 5px 0;
   padding: 5px;

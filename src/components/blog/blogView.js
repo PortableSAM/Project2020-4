@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
+import firebase from "../../firebase/firebase";
+
+const db = firebase.firestore();
+const dbRef = db.collection("blog").doc();
 
 export const BlogView = () => {
+  const [item, setItem] = useState([]);
   const [modal, setModal] = useState(false);
   const onToggle = () => setModal(!modal === true);
 
@@ -12,7 +17,40 @@ export const BlogView = () => {
   const onSubmitData = (data, e) => {
     e.preventDefault();
     console.log(data);
+    dbRef
+      .set({
+        title: data.title,
+        author: data.postAuthor,
+        desc: data.postContent,
+        category: data.category,
+        createAt: firebase.firestore.Timestamp.fromDate(new Date())
+      })
+      .then(res => {
+        console.log("Save Success", res);
+        alert("Save Success");
+        onToggle(e);
+      })
+      .catch(error => {
+        console.error("Fail", error);
+      });
   };
+
+  useEffect(() => {
+    const fetchData = () => {
+      db.collection("blog")
+        .orderBy("createAt", "desc")
+        .onSnapshot(snap => {
+          const item = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setItem(item);
+        });
+    };
+    return fetchData();
+  }, []);
+
+  console.log(item);
 
   return (
     <Styles>
@@ -28,12 +66,16 @@ export const BlogView = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">###</th>
-                <td>title</td>
-                <td>date</td>
-                <td>Author</td>
-              </tr>
+              {item.map(b => (
+                <tr key={b.id}>
+                  <th scope="row">{b.category}</th>
+                  <td>{b.title}</td>
+                  <td>
+                    {new Date(b.createAt.seconds * 1000).toLocaleString("ko")}
+                  </td>
+                  <td>{b.author}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
@@ -66,8 +108,18 @@ export const BlogView = () => {
                     />
                     {errors.postAuthor && "프로젝트 시작일 입력 요구"}
                   </label>
-                  <label className="postContent">
-                    File <input type="file" name="postFile" ref={register} />
+                  <label>
+                    Post Category{" "}
+                    <select
+                      type="text"
+                      name="category"
+                      ref={register({ required: true })}
+                    >
+                      <option value="개발공부">개발공부</option>
+                      <option value="일상">일상</option>
+                      <option value="잡소리">잡소리</option>
+                    </select>
+                    {errors.postAuthor && "프로젝트 시작일 입력 요구"}
                   </label>
                   <label className="postContent">
                     Post 내용{" "}

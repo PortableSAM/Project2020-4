@@ -61,7 +61,7 @@ export const News = () => {
       <NewsSection>
         {data ? (
           data.map((item, index) => (
-            <span index={index}>
+            <span key={index}>
               <h5>
                 <a
                   href={`${item.link}`}

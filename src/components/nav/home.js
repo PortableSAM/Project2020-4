@@ -3,42 +3,29 @@ import styled from "styled-components";
 import { WeatherInfo } from "../weatherApi/weatherInfo";
 import { News } from "../newsApi/newsApp";
 import firebase from "../../firebase/firebase";
+import { Link } from "react-router-dom";
 
-const cDb = firebase.database();
-const cDbRef = cDb.ref("contents/");
-const bDb = firebase.firestore();
-const bDbRef = bDb.collection("blog").orderBy("createAt", "desc");
+const db = firebase.firestore();
+const cDbRef = db.collection("contents").orderBy("startDay", "desc");
+const bDbRef = db.collection("blog").orderBy("createAt", "desc");
 
 export const Home = () => {
   const [btitle, setBtitle] = useState([]);
-  const [ctitle, setCtitle] = useState({ data: [] });
-  const cData = ctitle.data;
+  const [ctitle, setCtitle] = useState([]);
 
   useEffect(() => {
     const Title = () => {
-      const data = [];
-      cDbRef
-        .orderByChild("startDay")
-        .limitToLast(5)
-        .on("child_added", snapshot => {
-          data.push({
-            id: snapshot.key,
-            ...snapshot.val()
-          });
-          setCtitle({ data: data });
-        });
+      cDbRef.onSnapshot(snap => {
+        const cT = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCtitle(cT);
+      });
       bDbRef.onSnapshot(snap => {
-        const bT = snap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        const bT = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setBtitle(bT);
       });
     };
     return Title();
   }, []);
-
-  console.log(cData);
 
   return (
     <Styles>
@@ -52,22 +39,28 @@ export const Home = () => {
             <h6>새로운 게시글</h6>
             {btitle.map(b => (
               <BDiv key={b.id}>
-                <p className="btitle">{b.title}</p>
-                <p>{b.author}</p>
-                <p>
-                  {new Date(b.createAt.seconds * 1000).toLocaleDateString("ko")}
-                </p>
+                <Link to={`/blog/`}>
+                  <p className="btitle">{b.title}</p>
+                  <p>{b.author}</p>
+                  <p>
+                    {new Date(b.createAt.seconds * 1000).toLocaleDateString(
+                      "ko"
+                    )}
+                  </p>
+                </Link>
               </BDiv>
             ))}
           </article>
           <article>
             <h6>새로운 프로젝트</h6>
-            {cData.map(c => (
+            {ctitle.map(c => (
               <CDiv key={c.id}>
-                <p>{c.title}</p>
-                <p>
-                  {c.startDay}~{c.endDay}
-                </p>
+                <Link to="/contents">
+                  <p>{c.title}</p>
+                  <p>
+                    {c.startDay}~{c.endDay}
+                  </p>
+                </Link>
               </CDiv>
             ))}
           </article>
@@ -83,9 +76,20 @@ const BDiv = styled.div`
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
+  cursor: pointer;
   :hover {
     background: #303952;
     color: #ffffff;
+  }
+  & a {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    color: black;
+    text-decoration: none;
+    :hover {
+      color: #ffffff;
+    }
   }
   & .btitle {
     width: 60%;
@@ -99,9 +103,20 @@ const CDiv = styled.div`
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
+  cursor: pointer;
   :hover {
     background: #303952;
     color: #ffffff;
+  }
+  & a {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    color: black;
+    text-decoration: none;
+    :hover {
+      color: #ffffff;
+    }
   }
 `;
 

@@ -4,20 +4,22 @@ import firebase from "../../firebase/firebase";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { useForm } from "react-hook-form";
 
-const db = firebase.database();
+import { Link } from "react-router-dom";
+
+const db = firebase.firestore();
+const dbRef = db.collection("contents").doc();
 
 export const ContentsView = () => {
   const [modal, setModal] = useState(false);
-  const [contents, setContents] = useState({ data: [] });
+  const [contents, setContents] = useState([]);
   const onToggle = () => setModal(!modal === true);
-  const data = contents.data;
 
   const { register, handleSubmit, errors } = useForm();
 
   const onSubmitData = (data, e) => {
     e.preventDefault();
     console.log(data);
-    db.ref("contents/" + data.title)
+    dbRef
       .set({
         title: data.title,
         startDay: data.sDay,
@@ -26,7 +28,8 @@ export const ContentsView = () => {
         library: data.pLib,
         link: data.pLink,
         gihhub: data.pGithubLink,
-        etc: data.pEtc
+        etc: data.pEtc,
+        createAt: firebase.firestore.Timestamp.fromDate(new Date())
       })
       .then(res => {
         console.log("Add Success", res);
@@ -40,28 +43,38 @@ export const ContentsView = () => {
 
   useEffect(() => {
     const fetchData = () => {
-      const data = [];
-      const dbRef = db.ref("contents/");
-      dbRef.orderByChild("startDay").on("child_added", snapshot => {
-        data.push({
-          id: snapshot.key,
-          ...snapshot.val()
+      db.collection("contents")
+        .orderBy("startDay", "desc")
+        .onSnapshot(snap => {
+          const data = snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setContents(data);
         });
-        setContents({ data: data });
-      });
     };
     return fetchData();
   }, []);
-
-  console.log(data);
 
   return (
     <Styles>
       <main>
         <section>
-          {data.map(c => (
+          {contents.map(c => (
             <div key={c.id}>
-              <p>{c.title}</p>
+              <p className="title">
+                {c.title}
+                <span>
+                  <Link
+                    to={{
+                      pathname: `/contents/${c.id}/edit`,
+                      state: { id: c.id }
+                    }}
+                  >
+                    ✒
+                  </Link>
+                </span>
+              </p>
               <p>
                 기간: {c.startDay} ~ {c.endDay}
               </p>
@@ -238,6 +251,13 @@ const Styles = styled.div`
         border-radius: 5px;
         box-shadow: 3px 4px 4px rgba(241, 242, 246, 1),
           4px 5px 5px rgba(87, 96, 111, 1);
+      }
+      & .title {
+        display: flex;
+        justify-content: space-between;
+        & span {
+          cursor: pointer;
+        }
       }
       & p {
         margin-top: 5px;

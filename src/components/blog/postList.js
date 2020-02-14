@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import firebase from "../../firebase/firebase";
 
@@ -69,7 +70,11 @@ export const PostList = () => {
               {item.map(b => (
                 <tr key={b.id}>
                   <th scope="row">{b.category}</th>
-                  <td>{b.title}</td>
+                  <td>
+                    <Link to={{ pathname: `/blog/${b.id}`, state: { b } }}>
+                      {b.title}
+                    </Link>
+                  </td>
                   <td>
                     {new Date(b.createAt.seconds * 1000).toLocaleString("ko")}
                   </td>
@@ -80,8 +85,6 @@ export const PostList = () => {
           </table>
         </section>
         <div className="btn_section">
-          <input name="text_input" />
-          <button className="btn btn-outline-info">button</button>{" "}
           <div className="blogAddbtn">
             <Button color="primary" onClick={onToggle}>
               Add
@@ -115,7 +118,6 @@ export const PostList = () => {
                       name="category"
                       ref={register({ required: true })}
                     >
-                      <option value="개발공부">개발공부</option>
                       <option value="일상">일상</option>
                       <option value="잡소리">잡소리</option>
                     </select>

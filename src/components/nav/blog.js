@@ -1,6 +1,6 @@
 import React from "react";
-import { BlogView } from "../blog/blogView";
+import { PostList } from "../blog/postList";
 
 export const blog = () => {
-  return <BlogView />;
+  return <PostList />;
 };

@@ -7,7 +7,7 @@ import firebase from "../../firebase/firebase";
 const db = firebase.firestore();
 const dbRef = db.collection("blog").doc();
 
-export const BlogView = () => {
+export const PostList = () => {
   const [item, setItem] = useState([]);
   const [modal, setModal] = useState(false);
   const onToggle = () => setModal(!modal === true);
